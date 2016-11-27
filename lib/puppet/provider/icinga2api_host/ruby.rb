@@ -62,7 +62,7 @@ Puppet::Type.type(:icinga2api_host).provide(:ruby, :parent => Puppet::Provider::
       'enable_flapping', 'enable_notifications', 'enable_passive_checks', 'enable_perfdata',
       'event_command', 'flapping_threshold', 'groups', 'icon_image', 'icon_image_alt',
       'max_check_attempts', 'notes', 'notes_url', 'retry_interval', 'volatile', 'vars', 'zone' ].each do |attribute|
-      unless resource[attribute].nil? ; object_data[:attrs][attribute] = resource[attribute] end
+      object_data[:attrs][attribute] = resource[attribute]
     end
     object_data
   end
