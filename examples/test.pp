@@ -10,7 +10,7 @@ node default {
     ensure     => 'present',
     zone       => 'testzone',
     templates  => [ 'generic-host'],
-    #address    => '2.8.8.7',
+    address    => '2.8.8.7',
     address6   => 'ae80::fcd4:233:b2ce:a3fc',
     vars       => {
                     os => {

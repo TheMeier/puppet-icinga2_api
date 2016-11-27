@@ -4,6 +4,7 @@ require 'rest-client'
 require 'puppet'
 
 module Icinga2Api
+
   class Rest
 
     def self.request(options)
@@ -12,13 +13,15 @@ module Icinga2Api
       Puppet.debug("Icinga2Api::Rest.request data #{options[:object_data].to_s}")
       begin
         RestClient::Request.execute(
-          :method     => options[:method],
-          :url        => "#{options[:icinga2api_url]}/#{options[:path]}",
-          :user       => options[:user],
-          :password   => options[:password],
-          :verify_ssl => false,  # FIXME # TODO
-          :headers    => { :accept => :json, :content_type => :json },
-          :payload    => JSON.generate(options[:object_data]),
+          :method          => options[:method],
+          :url             => "#{options[:icinga2api_url]}/#{options[:path]}",
+          :user            => options[:user],
+          :ssl_ca_file     => options[:ssl_ca_file],
+          :ssl_client_cert => OpenSSL::X509::Certificate.new(File.read(options[:ssl_client_cert])),
+          :ssl_client_key  => OpenSSL::PKey::RSA.new(File.read(options[:ssl_client_key])),
+          :password        => options[:password],
+          :headers         => { :accept => :json, :content_type => :json },
+          :payload         => JSON.generate(options[:object_data]),
         )
       rescue => e
         Puppet.warning("Icinga2Api::Rest.request #{options[:method]} failed: #{e.to_s}")
@@ -41,22 +44,22 @@ module Icinga2Api
 
     def self.instances(options)
       path = '/objects/' + options[:type]
-      client = RestClient::Resource.new(
-        options[:icinga2api_url],
-        :user       => options[:user],
-        :password   => options[:password],
-        :verify_ssl => false  # FIXME # TODO
-      )
       begin
-        response = client[path].get :accept => :json, :content_type => :json 
-      rescue => e
-        Puppet.warning("Rest call failed " + e.to_s)
-        Puppet.debug(e.response)
-      end
-      begin
+        response = RestClient::Request.execute(
+          :url             => "#{options[:icinga2api_url]}/#{path}",
+          :method          => 'get',
+          :user            => options[:user],
+          :password        => options[:password],
+          :ssl_ca_file     => options[:ssl_ca_file],
+          :ssl_client_cert => OpenSSL::X509::Certificate.new(File.read(options[:ssl_client_cert])),
+          :ssl_client_key  => OpenSSL::PKey::RSA.new(File.read(options[:ssl_client_key])),
+          :verify_ssl      => OpenSSL::SSL::VERIFY_PEER,
+          :headers         => { :accept => :json, :content_type => :json },
+        )
         JSON.parse(response)['results']
       rescue => e
-        Puppet.warning("Could not parse result from API: " + response)
+        Puppet.warning("Icinga2Api::Rest.query #{options[:method]} failed: #{e.to_s}")
+        Puppet.debug("#{__method__} query response: #{e.inspect}")
       end
     end
 
