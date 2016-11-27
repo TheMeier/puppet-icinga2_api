@@ -1,0 +1,15 @@
+{
+  "name": "puppet-icinga2api",
+  "version": "0.1.0",
+  "author": "Christoph Maser",
+  "summary": "resource provider for Icinga2 API objects",
+  "license": "Apache-2.0",
+  "source": "https://github.com/TheMeier/puppet-icinga2api.git",
+  "project_page": "https://github.com/TheMeier/puppet-icinga2api",
+  "issues_url": "https://github.com/TheMeier/puppet-icinga2api/issues",
+  "dependencies": [
+    {"name":"puppetlabs-stdlib","version_requirement":">= 1.0.0"}
+  ],
+  "data_provider": null
+}
+
