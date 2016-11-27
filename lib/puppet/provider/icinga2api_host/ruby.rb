@@ -31,8 +31,8 @@ Puppet::Type.type(:icinga2api_host).provide(:ruby, :parent => Puppet::Provider::
 
   def create
     object_data = {}
-    object_data[:attrs] = {}
     object_data[:templates] = @resource[:templates]
+    object_data[:attrs] = {}
     object_data[:attrs][:address] = @resource['address']
     object_data[:attrs][:address6] = @resource['address6']
     object_data[:attrs][:zone] = @resource['zone']

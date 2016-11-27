@@ -5,43 +5,38 @@ require 'puppet'
 
 module Icinga2Api
   class Rest
-  
-    def self.create(options)
-      path = '/objects/' + options[:type] + '/' + options[:name]
 
-      client = RestClient::Resource.new(
-        options[:icinga2api_url],
-        :user       => options[:user],
-        :password   => options[:password],
-        :verify_ssl => false  # FIXME # TODO
-      )
-      Puppet.debug("Icinga2Api::Rest.create path: #{path}")
-      Puppet.debug("Icinga2Api::Rest.create PUT data #{options[:object_data].to_s}")
+    def self.request(options)
+      Puppet.debug("Icinga2Api::Rest.request path: #{options[:path]}")
+      Puppet.debug("Icinga2Api::Rest.request method: #{options[:method]}")
+      Puppet.debug("Icinga2Api::Rest.request data #{options[:object_data].to_s}")
       begin
-        client[path].put JSON.generate(options[:object_data]),  :accept => :json, :content_type => :json 
+        RestClient::Request.execute(
+          :method     => options[:method],
+          :url        => "#{options[:icinga2api_url]}/#{options[:path]}",
+          :user       => options[:user],
+          :password   => options[:password],
+          :verify_ssl => false,  # FIXME # TODO
+          :headers    => { :accept => :json, :content_type => :json },
+          :payload    => JSON.generate(options[:object_data]),
+        )
       rescue => e
-        Puppet.warning("Icinga2Api::Rest.create PUT failed: #{e.to_s}")
-        Puppet.debug("Icinga2Api::Rest.create PUT response: #{JSON.parse(e.response)['results'].to_s}")
+        Puppet.warning("Icinga2Api::Rest.request #{options[:method]} failed: #{e.to_s}")
+        Puppet.debug("#{__method__} PUT response: #{JSON.parse(e.response)['results'].to_s}")
       end
     end
 
-    def self.update(options)
-      path = '/objects/' + options[:type] + '/' + options[:name]
+  
+    def self.create(options)
+      options[:path] = '/objects/' + options[:type] + '/' + options[:name]
+      options[:method] = 'put'
+      request(options)
+    end
 
-      client = RestClient::Resource.new(
-        options[:icinga2api_url],
-        :user       => options[:user],
-        :password   => options[:password],
-        :verify_ssl => false  # FIXME # TODO
-      )
-      Puppet.debug("Icinga2Api::Rest.update path: #{path}")
-      Puppet.debug("Icinga2Api::Rest.update POST data #{options[:object_data].to_s}")
-      begin
-        client[path].post JSON.generate(options[:object_data]),  :accept => :json, :content_type => :json 
-      rescue => e
-        Puppet.warning("Icinga2Api::Rest.create POST failed: #{e.to_s}")
-        Puppet.debug("Icinga2Api::Rest.create POST response: #{JSON.parse(e.response)['results'].to_s}")
-      end
+    def self.update(options)
+      options[:path] = '/objects/' + options[:type] + '/' + options[:name]
+      options[:method] = 'post'
+      request(options)
     end
 
     def self.instances(options)
