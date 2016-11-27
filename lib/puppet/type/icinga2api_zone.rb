@@ -10,8 +10,17 @@ Puppet::Type.newtype(:icinga2api_zone) do
   end
 
   
-  newparam(:parent) do
+  newproperty(:parent) do
     desc 'The Icinga2 zone which is parent to this zone.'
+  end
+ 
+  newproperty(:endpoints, :array_matching => :all) do
+    desc 'Endpoint object to this zone.'
+  end
+ 
+  newproperty(:global, :boolean => true) do
+    desc 'Endpoint object to this zone.'
+    defaultto false
   end
  
 end
