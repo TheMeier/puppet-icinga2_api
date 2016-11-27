@@ -2,27 +2,29 @@ require 'json'
 
 require File.expand_path(File.join(File.dirname(__FILE__), '..', 'icinga2api_tasks.rb'))
 
-Puppet::Type.type(:icinga2api_zone).provide(:ruby, :parent => Puppet::Provider::Icinga2ApiTasks) do
+# rubocop:disable Metrics/BlockLength
+Puppet::Type.type(:icinga2api_zone).provide(:ruby, parent: Puppet::Provider::Icinga2ApiTasks) do
   mk_resource_methods
 
   def self.instances
     instances = []
     icinga2api_instances('zones').each do |zone|
       instances << new(
-        :ensure                => :present,
-        :name                  => zone['attrs']['__name'],
-        :parent                => zone['attrs']['parent'],
-        :endpoints             => zone['attrs']['endpoints'],
-        :global                => zone['attrs']['global'],
+        ensure: :present,
+        name: zone['attrs']['__name'],
+        parent: zone['attrs']['parent'],
+        endpoints: zone['attrs']['endpoints'],
+        global: zone['attrs']['global']
       )
     end
-   instances
+    instances
   end
 
   def self.prefetch(resources)
     zones = instances
     resources.keys.each do |name|
-      if provider = zones.find{ |zone| zone.name == name }
+      # rubocop:disable Lint/AssignmentInCondition
+      if provider = zones.find { |zone| zone.name == name } # rubocop:enable Lint/AssignmentInCondition
         resources[name].provider = provider
       end
     end
@@ -31,7 +33,7 @@ Puppet::Type.type(:icinga2api_zone).provide(:ruby, :parent => Puppet::Provider::
   def map_resource_data(resource)
     object_data = {}
     object_data[:attrs] = {}
-    [ 'parent', 'endpoints', 'global' ].each do |attribute|
+    %w(parent endpoints global).each do |attribute|
       object_data[:attrs][attribute] = resource[attribute]
     end
     object_data
@@ -48,6 +50,4 @@ Puppet::Type.type(:icinga2api_zone).provide(:ruby, :parent => Puppet::Provider::
   def exists?
     @property_hash[:ensure] == :present
   end
-
-
 end

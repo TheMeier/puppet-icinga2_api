@@ -15,7 +15,8 @@ A provider module to manage Icinga2 configuration objects via the Icinga2 Rest A
 
 The intended usage szenario is to create a host object on a puppet agent node by using the
 Icinga2 API locally on the agent i.e. localhost.
-TODO: Authentication by directly accessing the Icinga2 agent key files
+
+TODO: Find a way to configure API-Url and credential information
 
 ## Setup
 
