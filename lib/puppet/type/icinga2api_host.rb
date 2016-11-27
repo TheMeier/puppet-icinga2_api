@@ -33,8 +33,29 @@ Puppet::Type.newtype(:icinga2api_host) do
     defaultto Facter.value(:networking)['ip6']
   end 
 
-  newproperty(:vars) do
-  end
+  newproperty(:vars)
+  newproperty(:action_url)
+  newproperty(:check_command)
+  newproperty(:check_interval)
+  newproperty(:check_period)
+  newproperty(:check_timeout)
+  newproperty(:command_endpoint)
+  newproperty(:enable_active_checks)
+  newproperty(:enable_event_handler)
+  newproperty(:enable_flapping)
+  newproperty(:enable_notifications)
+  newproperty(:enable_passive_checks)
+  newproperty(:enable_perfdata)
+  newproperty(:event_command)
+  newproperty(:flapping_threshold)
+  newproperty(:groups)
+  newproperty(:icon_image)
+  newproperty(:icon_image_alt)
+  newproperty(:max_check_attempts)
+  newproperty(:notes)
+  newproperty(:notes_url)
+  newproperty(:retry_interval)
+  newproperty(:volatile)
 
 end
 
