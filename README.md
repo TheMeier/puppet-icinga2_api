@@ -43,5 +43,5 @@ requires ruby gems json and rest-client, confined by Puppet.feature restclient
                  }
                    
   } 
-``
+```
 
