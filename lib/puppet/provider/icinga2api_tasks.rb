@@ -5,7 +5,7 @@ class Puppet::Provider::Icinga2ApiTasks < Puppet::Provider
   initvars
   confine feature: :restclient
   @@options = {}
-  @@options[:icinga2api_url] = 'https://localhost.localdomain:5665/v1'
+  @@options[:icinga2api_url] = "https://#{Facter.value('fqdn')}:5665/v1"
   if File.readable?('/etc/icinga2/pki/ca.crt')
     @@options[:ssl_ca_file] = '/etc/icinga2/pki/ca.crt'
     if File.readable?("/etc/icinga2/pki/#{Facter.value('fqdn')}.crt") &&
